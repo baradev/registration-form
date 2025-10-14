@@ -11,7 +11,7 @@ const initialFormData = {
 };
 
 export default function RegistrationForm() {
-  const { formData, errors, touched, formState, handleChange, handleBlur, handleSubmit } =
+  const { formData, errors, touched, formState, isSubmitting, handleChange, handleBlur, handleSubmit } =
     useFormValidation(initialFormData);
 
   const getFieldClassName = (fieldName: string) => {
@@ -147,9 +147,9 @@ export default function RegistrationForm() {
       <button
         type="submit"
         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-        disabled={formState === 'success'}
+        disabled={formState === 'success' || isSubmitting}
       >
-        {formState === 'success' ? 'Registered' : 'Register'}
+        {isSubmitting ? 'Submitting...' : formState === 'success' ? 'Registered' : 'Register'}
       </button>
     </form>
   );

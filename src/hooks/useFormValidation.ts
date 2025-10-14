@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { FormData, FormErrors, FormState } from '@/app/components/RegistrationForm/types';
 import { validateField, validateForm } from '@/app/components/RegistrationForm/validation';
+import { registerUser } from '@/services/api';
 
 export const useFormValidation = (initialData: FormData) => {
   const [formData, setFormData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [formState, setFormState] = useState<FormState>('idle');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,7 +53,7 @@ export const useFormValidation = (initialData: FormData) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Mark all fields as touched
@@ -75,9 +77,32 @@ export const useFormValidation = (initialData: FormData) => {
       return;
     }
 
-    // Success
-    setFormState('success');
-    console.log('Form submitted successfully:', formData);
+    // Submit to API
+    setIsSubmitting(true);
+    try {
+      const response = await registerUser(formData);
+
+      if (response.success) {
+        setFormState('success');
+        console.log('Registration successful:', response.data);
+      } else {
+        // Handle API validation errors
+        if (response.errors) {
+          const apiErrors: FormErrors = {};
+          response.errors.forEach((err) => {
+            apiErrors[err.field as keyof FormErrors] = err.message;
+          });
+          setErrors(apiErrors);
+        }
+        setFormState('error');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setFormState('error');
+      setErrors({ email: 'Unable to connect to server. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return {
@@ -85,6 +110,7 @@ export const useFormValidation = (initialData: FormData) => {
     errors,
     touched,
     formState,
+    isSubmitting,
     handleChange,
     handleBlur,
     handleSubmit,
