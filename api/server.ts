@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
-import authRoutes from './routes/auth';
+import authRoutes from './routes/auth.js';
 
 const app: Express = express();
 const PORT = process.env.API_PORT || 3001;
@@ -21,11 +21,9 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// Start server
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`🚀 API server running on http://localhost:${PORT}`);
-  });
-}
+// Start server (always start when running this file directly)
+app.listen(PORT, () => {
+  console.log(`🚀 API server running on http://localhost:${PORT}`);
+});
 
 export default app;

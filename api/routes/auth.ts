@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { userStorage } from '../models/User';
-import { validateRegistrationData } from '../utils/validation';
+import { userStorage } from '../models/User.js';
+import { validateRegistrationData } from '../utils/validation.js';
 
 const router = Router();
 
