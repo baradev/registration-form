@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useFormValidation } from './useFormValidation';
+import * as api from '@/services/api';
+
+// Mock the API module
+vi.mock('@/services/api');
 
 describe('useFormValidation', () => {
   const initialData = {
@@ -9,6 +13,10 @@ describe('useFormValidation', () => {
     email: '',
     password: '',
   };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('should initialize with empty form data', () => {
     const { result } = renderHook(() => useFormValidation(initialData));
@@ -96,7 +104,7 @@ describe('useFormValidation', () => {
     expect(result.current.errors).not.toEqual({});
   });
 
-  it('should set success state on submit with valid data', () => {
+  it('should set success state on submit with valid data', async () => {
     const validData = {
       firstName: 'John',
       lastName: 'Doe',
@@ -104,13 +112,26 @@ describe('useFormValidation', () => {
       password: 'Password123!',
     };
 
+    // Mock successful API response
+    vi.mocked(api.registerUser).mockResolvedValue({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        id: '123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@gmail.com',
+        createdAt: new Date().toISOString(),
+      },
+    });
+
     const { result } = renderHook(() => useFormValidation(validData));
 
-    act(() => {
+    await act(async () => {
       const event = {
         preventDefault: vi.fn(),
       } as unknown as React.FormEvent;
-      result.current.handleSubmit(event);
+      await result.current.handleSubmit(event);
     });
 
     expect(result.current.formState).toBe('success');
@@ -133,7 +154,7 @@ describe('useFormValidation', () => {
     expect(result.current.touched.password).toBe(true);
   });
 
-  it('should reset form state to idle when typing after success', () => {
+  it('should reset form state to idle when typing after success', async () => {
     const validData = {
       firstName: 'John',
       lastName: 'Doe',
@@ -141,14 +162,27 @@ describe('useFormValidation', () => {
       password: 'Password123!',
     };
 
+    // Mock successful API response
+    vi.mocked(api.registerUser).mockResolvedValue({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        id: '123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@gmail.com',
+        createdAt: new Date().toISOString(),
+      },
+    });
+
     const { result } = renderHook(() => useFormValidation(validData));
 
     // Submit to get success state
-    act(() => {
+    await act(async () => {
       const submitEvent = {
         preventDefault: vi.fn(),
       } as unknown as React.FormEvent;
-      result.current.handleSubmit(submitEvent);
+      await result.current.handleSubmit(submitEvent);
     });
 
     expect(result.current.formState).toBe('success');

@@ -1,9 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RegistrationForm from './index';
+import * as api from '@/services/api';
+
+// Mock the API module
+vi.mock('@/services/api');
 
 describe('RegistrationForm', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   it('should render all form fields', () => {
     render(<RegistrationForm />);
 
@@ -90,6 +97,19 @@ describe('RegistrationForm', () => {
   });
 
   it('should show success state when form is valid', async () => {
+    // Mock successful API response
+    vi.mocked(api.registerUser).mockResolvedValue({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        id: '123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@gmail.com',
+        createdAt: new Date().toISOString(),
+      },
+    });
+
     const user = userEvent.setup();
     render(<RegistrationForm />);
 
@@ -105,6 +125,19 @@ describe('RegistrationForm', () => {
   });
 
   it('should disable submit button after successful registration', async () => {
+    // Mock successful API response
+    vi.mocked(api.registerUser).mockResolvedValue({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        id: '123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@gmail.com',
+        createdAt: new Date().toISOString(),
+      },
+    });
+
     const user = userEvent.setup();
     render(<RegistrationForm />);
 
