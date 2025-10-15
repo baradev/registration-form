@@ -11,6 +11,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+**Available commands**:
+- `npm run dev` - Start the development server
+- `npm test` - Run all tests
+
 ## Requirements Met
 
 - React + TypeScript + Next.js
@@ -43,9 +47,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Testing
 
 ```bash
-npm test              # Run all tests
-npm run test:ui       # Run tests with UI
-npm run test:coverage # Coverage report
+npm test  # Run all tests
 ```
 
 **Test Coverage**: 59 tests total
@@ -89,13 +91,11 @@ src/
 
 ## API (Extra)
 
-The project includes a Node.js/Express API backend with in-memory storage:
+The project includes a Node.js/Express API backend with in-memory storage. The API is optional - all form validation works client-side.
 
-```bash
-npm run dev:all  # Run both frontend and API
-```
+**Note**: The API can be run locally but is not configured for CodeSandbox.
 
-API runs on `http://localhost:3001` with endpoints:
+API endpoints (when running locally on `http://localhost:3001`):
 
 - `POST /api/auth/register` - Register new user
 - `GET /api/auth/users` - Get all registered users (for testing)
