@@ -2,6 +2,7 @@
   "name": "registration-form",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:api": "tsx watch api/server.ts",
